@@ -39,11 +39,7 @@ const inputDecimal = (dot) => {
 };
 
 const screenUpdate = (number) => {
-    if (number === 'AC') {
-        screen.value = '0';
-    } else {
-        screen.value = number;
-    };
+    screen.value = number;
 };
 
 clearBtn.addEventListener('click', () => {
@@ -66,7 +62,7 @@ operations.forEach((operation) => {
 
 decimal.addEventListener('click', (event) => {
     inputDecimal(event.target.value);
-    screenUpdate(currentUpdate);
+    screenUpdate(currentNumber);
 });
 
 const calculate = () => {
@@ -84,9 +80,6 @@ const calculate = () => {
         case '/':
             result = parseFloat(prevNumber) / parseFloat(currentNumber);
             break;
-        // case '%':
-        //     result = parseFloat(prevNumber) / 100;
-        //     break;
         default:
             return;
     }
