@@ -1,101 +1,59 @@
-let currentNumber = '0';
-let prevNumber = '';
-let calcOperation = '';
+let prompt = '0';
+let display = '0';
+let result = '';
 
-const numbers = document.querySelectorAll('.number');
-const operations = document.querySelectorAll('.operator');
 const screen = document.querySelector('.screen');
-const clearBtn = document.querySelector('.all-clear');
-const equalSign = document.querySelector('.equal-sign');
-const decimal = document.querySelector('.decimal');
-const percentage = document.querySelector('.percentage');
-
-const clearAll = () => {
-    prevNumber = '';
-    currentNumber = '0';
-    calcOperation = '';
-};
+const keys = document.querySelector('.keys');
 
 const inputNumber = (number) => {
-    if (currentNumber === '0') {
-        currentNumber = number;
+    if (display === '0') {
+        display = number;
+        prompt = number;
     } else {
-        currentNumber += number;
+        display += number;
+        prompt += number;
     };
 };
 
-const inputOperation = (operation) => {
-    if (calcOperation === '') {
-        prevNumber = currentNumber;
-    }
-    calcOperation = operation;
-    currentNumber = '0';
+const inputOperator = (oprPrompt, oprDisplay) => {
+    if (['+', '-', '/', '*', '.'].includes(prompt.slice(-1))) {
+        prompt += '';
+        display += '';
+    } else {
+        prompt += oprPrompt;
+        display += oprDisplay;
+    };
 };
 
-const inputDecimal = (dot) => {
-    if (currentNumber.includes('.')) {
-        return;
-    }
-    currentNumber += dot;
+const clearAll = () => {
+    prompt = '0';
+    display = '0';
+    result = '';
 };
 
 const screenUpdate = (number) => {
     screen.value = number;
 };
 
-clearBtn.addEventListener('click', () => {
-    clearAll();
-    screenUpdate(currentNumber);
-});
-
-numbers.forEach((number) => {
-    number.addEventListener('click', (event) => {
-        inputNumber(event.target.value);
-        screenUpdate(currentNumber);
-    });
-});
-
-operations.forEach((operation) => {
-    operation.addEventListener('click', (event) => {
-        inputOperation(event.target.value);
-    });
-});
-
-decimal.addEventListener('click', (event) => {
-    inputDecimal(event.target.value);
-    screenUpdate(currentNumber);
-});
-
-percentage.addEventListener('click', (event) => {
-    inputOperation(event.target.value);
-});
-
-const calculate = () => {
-    let result = '';
-    switch(calcOperation) {
-        case '+':
-            result = parseFloat(prevNumber) + parseFloat(currentNumber);
-            break;
-        case '-':
-            result = parseFloat(prevNumber) - parseFloat(currentNumber);
-            break;
-        case '*':
-            result = parseFloat(prevNumber) * parseFloat(currentNumber);
-            break;
-        case '/':
-            result = parseFloat(prevNumber) / parseFloat(currentNumber);
-            break;
-        case '%':
-            result = parseFloat(prevNumber) / 100;
-            break;
-        default:
-            return;
-    }
-    currentNumber = result;
-    calcOperation = '';
+const calcResult = (number) => {
+    result = eval(number);
 };
 
-equalSign.addEventListener('click', () => {
-    calculate();
-    screenUpdate(currentNumber);
+keys.addEventListener('click', (event) => {
+    if (event.target.className.includes('number')) {
+        inputNumber(event.target.value);
+        screenUpdate(display);
+    } else if (event.target.className == 'operator') {
+        inputOperator(event.target.value, event.target.innerHTML);
+        screenUpdate(display);
+    } else if (event.target.className == 'all-clear') {
+        clearAll();
+        screenUpdate(display);
+    } else if (event.target.className == 'percentage') {
+        inputOperator('/100', event.target.value);
+        screenUpdate(display);
+    } else {
+        calcResult(prompt);
+        screenUpdate(result);
+    };
 });
