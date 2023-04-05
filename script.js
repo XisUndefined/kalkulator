@@ -39,9 +39,6 @@ const clearAll = () => {
 
 const screenUpdate = (number) => {
     screen.value = number;
-    // console.log(`display: ${display}`);
-    // console.log(`result: ${result}`);
-    // console.log("");
 };
 
 const calcResult = (number) => {
