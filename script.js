@@ -9,10 +9,10 @@ const inputNumber = (number) => {
     if (display === '0') {
         display = number;
         prompt = number;
-    } else if (result !== '') {
+    } else if (result !== '' && ['+', '-', '/', '*', '.'].includes(prompt.slice(-1)) === false) {
         result = '';
-        display += number;
-        prompt += number;
+        display = number;
+        prompt = number;
     } else {
         display += number;
         prompt += number;
