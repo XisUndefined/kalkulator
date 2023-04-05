@@ -9,6 +9,10 @@ const inputNumber = (number) => {
     if (display === '0') {
         display = number;
         prompt = number;
+    } else if (result !== '') {
+        result = '';
+        display += number;
+        prompt += number;
     } else {
         display += number;
         prompt += number;
@@ -17,8 +21,10 @@ const inputNumber = (number) => {
 
 const inputOperator = (oprPrompt, oprDisplay) => {
     if (['+', '-', '/', '*', '.'].includes(prompt.slice(-1))) {
-        prompt += '';
-        display += '';
+        prompt = prompt.slice(0, -1);
+        prompt += oprPrompt;
+        display = display.slice(0, -1);
+        display += oprDisplay;
     } else {
         prompt += oprPrompt;
         display += oprDisplay;
@@ -33,10 +39,15 @@ const clearAll = () => {
 
 const screenUpdate = (number) => {
     screen.value = number;
+    // console.log(`display: ${display}`);
+    // console.log(`result: ${result}`);
+    // console.log("");
 };
 
 const calcResult = (number) => {
     result = eval(number);
+    prompt = result.toString();
+    display = result.toString();
 };
 
 keys.addEventListener('click', (event) => {
@@ -54,6 +65,6 @@ keys.addEventListener('click', (event) => {
         screenUpdate(display);
     } else {
         calcResult(prompt);
-        screenUpdate(result);
+        screenUpdate(display);
     };
 });
