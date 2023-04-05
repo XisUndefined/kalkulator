@@ -1,101 +1,60 @@
 let currentNumber = '0';
-let prevNumber = '';
+// let prevNumber = '';
+let display = '0';
+let prompt = '';
 let calcOperation = '';
 
-const numbers = document.querySelectorAll('.number');
-const operations = document.querySelectorAll('.operator');
 const screen = document.querySelector('.screen');
-const clearBtn = document.querySelector('.all-clear');
-const equalSign = document.querySelector('.equal-sign');
-const decimal = document.querySelector('.decimal');
-const percentage = document.querySelector('.percentage');
+const keys = document.querySelector('.keys');
 
 const clearAll = () => {
-    prevNumber = '';
     currentNumber = '0';
+    display = '0';
+    prompt = '';
     calcOperation = '';
-};
+}
 
 const inputNumber = (number) => {
-    if (currentNumber === '0') {
+    if (currentNumber === '0' && prompt === '') {
         currentNumber = number;
+        display = number;
+        calcOperation = '';
     } else {
         currentNumber += number;
+        display += number;
+        calcOperation = '';
     };
 };
 
-const inputOperation = (operation) => {
+const inputOperator = (oprPrompt, oprDisplay) => {
     if (calcOperation === '') {
-        prevNumber = currentNumber;
-    }
-    calcOperation = operation;
-    currentNumber = '0';
-};
-
-const inputDecimal = (dot) => {
-    if (currentNumber.includes('.')) {
-        return;
-    }
-    currentNumber += dot;
+        prompt += currentNumber;
+        calcOperation = oprPrompt;
+        prompt += calcOperation;
+        display += oprDisplay;
+    } else if (calcOperation !== '') {
+        calcOperation = oprPrompt;
+        display[-1] = oprDisplay;
+    };
 };
 
 const screenUpdate = (number) => {
     screen.value = number;
 };
 
-clearBtn.addEventListener('click', () => {
-    clearAll();
-    screenUpdate(currentNumber);
-});
-
-numbers.forEach((number) => {
-    number.addEventListener('click', (event) => {
+keys.addEventListener('click', (event) => {
+    if (event.target.className.includes('number')) {
+        console.log(event.target);
         inputNumber(event.target.value);
-        screenUpdate(currentNumber);
-    });
-});
-
-operations.forEach((operation) => {
-    operation.addEventListener('click', (event) => {
-        inputOperation(event.target.value);
-    });
-});
-
-decimal.addEventListener('click', (event) => {
-    inputDecimal(event.target.value);
-    screenUpdate(currentNumber);
-});
-
-percentage.addEventListener('click', (event) => {
-    inputOperation(event.target.value);
-});
-
-const calculate = () => {
-    let result = '';
-    switch(calcOperation) {
-        case '+':
-            result = parseFloat(prevNumber) + parseFloat(currentNumber);
-            break;
-        case '-':
-            result = parseFloat(prevNumber) - parseFloat(currentNumber);
-            break;
-        case '*':
-            result = parseFloat(prevNumber) * parseFloat(currentNumber);
-            break;
-        case '/':
-            result = parseFloat(prevNumber) / parseFloat(currentNumber);
-            break;
-        case '%':
-            result = parseFloat(prevNumber) / 100;
-            break;
-        default:
-            return;
-    }
-    currentNumber = result;
-    calcOperation = '';
-};
-
-equalSign.addEventListener('click', () => {
-    calculate();
-    screenUpdate(currentNumber);
+        screenUpdate(display);
+    } else if (event.target.className == 'operator') {
+        inputOperator(event.target.value, event.target.innerHTML);
+        screenUpdate(display);
+    } else if (event.target.className == 'all-clear') {
+        clearAll();
+        screenUpdate(display);
+    } else if (event.target.className == 'equal-sign') {
+        calcResult();
+        screenUpdate(display);
+    };
 });
